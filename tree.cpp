@@ -1,105 +1,112 @@
+// Copyright 2020 Mohsan
+
 #include <iostream>
 #include <memory>
 
 struct Node{
-    Node* parent; //Parent of the tree
-    Node* right; // left child of the tree
-    Node* left;  // right child of the tree
-    int data;     // data containing in the node
-    Node(const int item):
+    Node* parent;   // Parent of the tree
+    Node* right;    // left child of the tree
+    Node* left;     // right child of the tree
+    int data;       // data containing in the node
+
+    explicit Node(const int item):
         parent(nullptr),
         right(nullptr),
         left(nullptr),
         data(item){
-            // this will stay empty    
+            // this will stay empty
         }
 };
 
 
 
 class Tree{
-private:
+ private:
     std::size_t size;
     Node* root;
-    
-    //return new_node
-    Node* new_node(const int item){
+
+    // return new_node
+    Node* new_node(const int item) {
         return new Node(item);
     }
-    void freememory(Node* node){
-        if (node == nullptr)
+    void freememory(Node* node) {
+        if (node == nullptr) {
             return;
-        else{
+        } else {
             freememory(node->right);
             freememory(node->left);
             delete node;
         }
     }
 
-public:
+ public:
     Tree(): size(0),
-    root(nullptr){
-
+    root(nullptr) {
     }
-
-    void insert(int number){
+    void insert(int number) {
         Node* element = new_node(number);
         Node* parent = nullptr;
         Node* x = root;
 
-        while( x != nullptr){
+        while ( x != nullptr ) {
             parent = x;
-            if(element->data < x->data){
+            if (element->data < x->data) {
                 x = x->left;
-            }
-            else{
+            } else {
                 x = x->right;
             }
         }
         element->parent = parent;
-        if (parent == nullptr){
+        if (parent == nullptr) {
             root = element;
             ++size;
-        }
-        else{
-            if (element->data < parent->data){
+        } else {
+            if (element->data < parent->data) {
                 parent->left = element;
                 ++size;
-            }
-            else{
+            } else {
                 parent->right = element;
                 ++size;
             }
         }
     }
-
-    Node* search(int key){
-        Node* head = root;
-        if (head == nullptr || key == head->data){
-            return head;
+    const Node* getRoot() const{
+        return root;
+    }
+    const Node* search(const Node* node, int key) {
+        if (node == nullptr || key == node->data) {
+            return node;
         }
-        if (key < head->data){
-            return head;
+        if (key < node->data) {
+            return search(node->left, key);
+        }else { 
+            return search(node->right, key);
         }
-        return nullptr;
     }
 
-    bool isEmpty() const{
-        if(root == nullptr){
+    bool isEmpty() const {
+        if (root == nullptr) {
             return true;
         }
         return false;
     }
     ~Tree(){
-        if(!isEmpty()){
+        if (!isEmpty()){
             freememory(root);
         }
     }
 };
-+
-int main(){
+
+int main() {
     Tree tree;
     tree.insert(6);
-    tree.insert(5); //this will result in memory leak, so I have to solve this issue; in the free memory function
+    tree.insert(5);
+    const Node* item = tree.search(tree.getRoot(), 5);
+    if(item){
+        std::cout << "item found" << std::endl;
+    }
+    else{
+        std::cout << "Item does not find" << std::endl;
+    }
     return 0;
 }
