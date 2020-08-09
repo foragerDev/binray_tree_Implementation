@@ -70,7 +70,7 @@ class Tree{
             }
         }
     }
-    const Node* getRoot() const{
+    const Node* getRoot() const {
         return root;
     }
     const Node* search(const Node* node, int key) {
@@ -79,7 +79,7 @@ class Tree{
         }
         if (key < node->data) {
             return search(node->left, key);
-        }else { 
+        } else {
             return search(node->right, key);
         }
     }
@@ -90,8 +90,24 @@ class Tree{
         }
         return false;
     }
+
+    const Node* maximum() const {
+        Node* current = root;
+        while (current->right != nullptr) {
+            current = current->right;
+        }
+        return current;
+    }
+
+    const Node* minimum() const {
+        Node* current = root;
+        while (current->left != nullptr) {
+            current = current->left;
+        }
+        return current;
+    }
     ~Tree(){
-        if (!isEmpty()){
+        if (!isEmpty()) {
             freememory(root);
         }
     }
@@ -101,12 +117,16 @@ int main() {
     Tree tree;
     tree.insert(6);
     tree.insert(5);
+    tree.insert(7);
     const Node* item = tree.search(tree.getRoot(), 5);
-    if(item){
+    if (item) {
         std::cout << "item found" << std::endl;
-    }
-    else{
+    } else {
         std::cout << "Item does not find" << std::endl;
     }
+    const Node* maximum = tree.maximum();
+    std::cout << maximum->data << std::endl;
+    const Node* minimum = tree.minimum();
+    std::cout << minimum->data << std::endl;
     return 0;
 }
