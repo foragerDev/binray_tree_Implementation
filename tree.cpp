@@ -26,8 +26,14 @@ private:
     Node* new_node(const int item){
         return new Node(item);
     }
-    void freememory(){
-
+    void freememory(Node* node){
+        if (node == nullptr)
+            return;
+        else{
+            freememory(node->right);
+            freememory(node->left);
+            delete node;
+        }
     }
 
 public:
@@ -40,6 +46,7 @@ public:
         Node* element = new_node(number);
         Node* parent = nullptr;
         Node* x = root;
+
         while( x != nullptr){
             parent = x;
             if(element->data < x->data){
@@ -65,15 +72,34 @@ public:
             }
         }
     }
-    
-    ~Tree(){
 
+    Node* search(int key){
+        Node* head = root;
+        if (head == nullptr || key == head->data){
+            return head;
+        }
+        if (key < head->data){
+            return head;
+        }
+        return nullptr;
+    }
+
+    bool isEmpty() const{
+        if(root == nullptr){
+            return true;
+        }
+        return false;
+    }
+    ~Tree(){
+        if(!isEmpty()){
+            freememory(root);
+        }
     }
 };
-
++
 int main(){
     Tree tree;
-    tree.insert(6); //this will result in memory leak, so I have to solve this issue; in the free memory function
+    tree.insert(6);
+    tree.insert(5); //this will result in memory leak, so I have to solve this issue; in the free memory function
     return 0;
-
 }
